@@ -2,29 +2,22 @@ package com.study.boardproject.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @ToString // 쉽게 출력하도록함
-@Table(indexes = {
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // entity는 항상 protected레벨의 기본 생성자를 만들어줘야 한다.
+@Table(indexes = { // index를 걸어준다.
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
-}) // index를 걸어준다.
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // entity는 항상 protected레벨의 기본 생성자를 만들어줘야 한다.
-@EntityListeners(AuditingEntityListener.class) // auditing을 위해서 추가해야 한다.
+})
 @Entity
-public class Article {
+public class Article extends AuditingFields{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,22 +40,6 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
-    // auditing 추가
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime createdAt; //생성일시
-
-    @CreatedBy
-    @Column(nullable = false, length = 100)
-    private String createdBy; // 생성자
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt; // 수정일시
-
-    @LastModifiedBy
-    @Column(nullable = false, length = 100)
-    private String modifiedBy; //수정자
 
     // 실제로 만들때 필요한 값만을 뽑아내서 생성자를 만든다. id, 생성시간, 생성자 등은 만들때 필요없고 자동으로 등록된다.
     public Article(String title, String content, String hashtag) {
