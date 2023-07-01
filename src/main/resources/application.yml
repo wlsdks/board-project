@@ -28,8 +28,14 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100 # 한번에 100개의 쿼리를 묶어서 bulk로 select가 가능하게 해준다. (N+1 해결방법중 하나)
         highlight_sql: true # 쿼리를 보기쉽게 하이라이트를 설정한다.
-#  h2.console.enabled: true # 인메모리 db로 h2를 쓸건데 활성화할건지 물어보는것
+  #  h2.console.enabled: true # 인메모리 db로 h2를 쓸건데 활성화할건지 물어보는것
+
   sql.init.mode: always # resources 폴더에 만든 data.sql을 언제 작동시킬지 정하는것 (테스트, 아예 동작x, 리얼환경 중 선택)
+
+  # halExplorer 설정
+  data.rest:
+    base-path: /api
+    detection-strategy: annotated
 
 ---  # yaml 파일은 "-" 모양 줄 3개를 기준으로 여러개의 document를 만들수가 있다.
 #
