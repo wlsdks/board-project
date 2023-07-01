@@ -1,5 +1,6 @@
 package com.study.boardproject.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ class ArticleControllerTest {
         this.mockMvc = mockMvc;
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 리스트 (게시판) 페이지 - 정상호출")
     @Test
     void board_list_test() throws Exception {
@@ -30,9 +32,11 @@ class ArticleControllerTest {
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(view().name("articles/index")) // view의 이름검사 실시
                 .andExpect(model().attributeExists("articles")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 상세 페이지 - 정상호출 ")
     @Test
     void board_list_test2() throws Exception {
@@ -42,9 +46,12 @@ class ArticleControllerTest {
         mockMvc.perform(get("/articles/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
-                .andExpect(model().attributeExists("article")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
+                .andExpect(view().name("articles/detail")) // view의 이름검사 실시
+                .andExpect(model().attributeExists("article")) // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
+                .andExpect(model().attributeExists("articleComments")); // 게시글 댓글정보가 model에 담겨있는지 체크
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 검색 전용 페이지 - 정상호출 ")
     @Test
     void board_list_test3() throws Exception {
@@ -53,9 +60,11 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)); // view니까 text_html
+                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(model().attributeExists("articles/search"));
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 해시테그 검색 페이지 - 정상호출 ")
     @Test
     void board_list_test4() throws Exception {
@@ -64,7 +73,8 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles/search-hashtag"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)); // view니까 text_html
+                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(model().attributeExists("articles/search-hashtag"));
     }
 
 }
