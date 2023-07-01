@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("View 컨트롤러 - 게시글")
-@WebMvcTest
+@WebMvcTest(ArticleController.class) //이렇게 테스트할 컨트롤러의 클래스를 넣어주면 최적화된다.
 class ArticleControllerTest {
 
     private final MockMvc mockMvc;
