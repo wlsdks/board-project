@@ -13,6 +13,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * data-rest이니 mocking이 힘들어서 그냥 이렇게 직접 db에 접근해서 사용한다.(인테그레이션 테스트 진행)
+ */
 @DisplayName("Data Rest - api 테스트")
 @Transactional //db에 접근하니 transactional을 적어줘야 자동으로 테스트 후 rollback을 한다.
 @AutoConfigureMockMvc // Mock을 사용하려면 추가해줘야함
