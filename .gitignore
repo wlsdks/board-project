@@ -223,3 +223,6 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/macos,gradle,intellij+all,windows,java,visualstudiocode
 
 .jpb/jpb-settings.xml
+
+# QEntity
+src/main/generated/*
