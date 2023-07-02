@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public class AuditingFields {
+public abstract class AuditingFields {
 
     // datetime의 format을 설정
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
