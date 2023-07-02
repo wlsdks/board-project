@@ -24,25 +24,25 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public class AuditingFields {
+public abstract class AuditingFields {
 
     // datetime의 format을 설정
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false) // 최초 한번만 설정되니 업데이트가 불가능하도록 설정해준다.
-    private LocalDateTime createdAt; //생성일시
+    protected LocalDateTime createdAt; //생성일시
 
     @CreatedBy
     @Column(nullable = false, length = 100)
-    private String createdBy; // 생성자
+    protected String createdBy; // 생성자
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime modifiedAt; // 수정일시
+    protected LocalDateTime modifiedAt; // 수정일시
 
     @LastModifiedBy
     @Column(nullable = false, length = 100)
-    private String modifiedBy; //수정자
+    protected String modifiedBy; //수정자
 
 }
