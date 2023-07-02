@@ -35,7 +35,6 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articles")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 상세 페이지 - 정상호출 ")
     @Test
     void board_list_test2() throws Exception {

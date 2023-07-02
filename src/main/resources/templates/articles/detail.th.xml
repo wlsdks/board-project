@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<thlogic>
+    <!-- select로 header를 찾는다. -->
+    <attr sel="#header" th:replace="header :: header"></attr>
+    <attr sel="#footer" th:replace="footer :: footer"></attr>
+</thlogic>
