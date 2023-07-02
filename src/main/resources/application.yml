@@ -36,6 +36,9 @@ spring:
   data.rest:
     base-path: /api
     detection-strategy: annotated
+  # thymeleaf 커스텀 설정 추가
+  thymeleaf3:
+    decoupled-logic: true
 
 ---  # yaml 파일은 "-" 모양 줄 3개를 기준으로 여러개의 document를 만들수가 있다.
 #
