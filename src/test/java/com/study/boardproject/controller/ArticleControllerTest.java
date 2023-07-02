@@ -22,7 +22,6 @@ class ArticleControllerTest {
         this.mockMvc = mockMvc;
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 리스트 (게시판) 페이지 - 정상호출")
     @Test
     void board_list_test() throws Exception {
@@ -31,7 +30,7 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
                 .andExpect(view().name("articles/index")) // view의 이름검사 실시
                 .andExpect(model().attributeExists("articles")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
     }
