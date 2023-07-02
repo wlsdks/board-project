@@ -30,7 +30,7 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html characterset옵션이 붙어도 오류안나게 compatible로 테스트함
                 .andExpect(view().name("articles/index")) // view의 이름검사 실시
                 .andExpect(model().attributeExists("articles")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
     }
@@ -44,7 +44,7 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
                 .andExpect(view().name("articles/detail")) // view의 이름검사 실시
                 .andExpect(model().attributeExists("article")) // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
                 .andExpect(model().attributeExists("articleComments")); // 게시글 댓글정보가 model에 담겨있는지 체크
@@ -59,7 +59,7 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
                 .andExpect(model().attributeExists("articles/search"));
     }
 
@@ -72,7 +72,7 @@ class ArticleControllerTest {
         //when & then
         mockMvc.perform(get("/articles/search-hashtag"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
                 .andExpect(model().attributeExists("articles/search-hashtag"));
     }
 
