@@ -1,10 +1,12 @@
 package com.study.boardproject.controller;
 
+import com.study.boardproject.config.SecurityConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -12,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("View 컨트롤러 - 게시글")
+@Import(SecurityConfig.class) // springSecurity로 막아놓은 설정을 import해줘야함
 @WebMvcTest(ArticleController.class) //이렇게 테스트할 컨트롤러의 클래스를 넣어주면 최적화된다.
 class ArticleControllerTest {
 
