@@ -224,5 +224,8 @@ gradle-app.setting
 
 .jpb/jpb-settings.xml
 
-# QEntity
+### QEntity
 src/main/generated/*
+
+### JPA BUDDY
+.jpb/
