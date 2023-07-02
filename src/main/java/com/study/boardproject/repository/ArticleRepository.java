@@ -5,6 +5,8 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.study.boardproject.domain.Article;
 import com.study.boardproject.domain.QArticle;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -17,6 +19,9 @@ public interface ArticleRepository extends
         QuerydslPredicateExecutor<Article>, // 이 entity의 모든 필드에 대한 기본 검색기능을 추가해준다. (like검색 불가능)
         QuerydslBinderCustomizer<QArticle> // 이걸 추가해야 검색의 세부설정이 가능하다. (like 검색 설정가능)
 {
+
+    Page<Article> findByTitle(String title, Pageable pageable);
+
     // 앞에 default를 달아줘서 메서드를 구현할수 있다.
     // 검색 기능 - 상세검색 구현
     @Override
