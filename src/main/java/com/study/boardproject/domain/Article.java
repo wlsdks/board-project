@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString // 쉽게 출력하도록함
+@ToString(callSuper = true) // 쉽게 출력하도록함
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // entity는 항상 protected레벨의 기본 생성자를 만들어줘야 한다.
 @Table(indexes = { // index를 걸어준다.
         @Index(columnList = "title"),
@@ -23,6 +23,11 @@ public class Article extends AuditingFields{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_account_id")
+    private UserAccount userAccount; // 유저 정보ID
+
     // @Setter를 필드에 걸어서 정말 필요한 필드에만 걸어준다. Id같은건 못건들게 한다. nullable은 default는 true이다.
     @Setter
     @Column(nullable = false)
@@ -36,21 +41,22 @@ public class Article extends AuditingFields{
 
     // List,Set으로 설정가능 (중복허용x로 set사용함)
     @ToString.Exclude // 순환참조를 방지하기위해 toString에서 제외시켜버린다. (중요!!)
-    @OrderBy("id") // 정렬기준은 id로 정렬을 추가한다.
+    @OrderBy("createdAt DESC") // 정렬기준은 id로 정렬을 추가한다.
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
 
     // 실제로 만들때 필요한 값만을 뽑아내서 생성자를 만든다. id, 생성시간, 생성자 등은 만들때 필요없고 자동으로 등록된다.
-    public Article(String title, String content, String hashtag) {
+    public Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
 
     // Article 엔티티를 가진녀석을 외부에서 쉽게 만들수있도록 of() 메서드를 만든다.
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     /**
