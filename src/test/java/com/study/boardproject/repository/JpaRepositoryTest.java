@@ -2,6 +2,7 @@ package com.study.boardproject.repository;
 
 import com.study.boardproject.config.JpaConfig;
 import com.study.boardproject.domain.Article;
+import com.study.boardproject.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,8 @@ class JpaRepositoryTest {
         long previousCount = articleRepository.count();
 
         //when
-        Article article = Article.of("new article", "new content", "#spring");
-        Article savedArticle = articleRepository.save(article);
+//        Article article = Article.of(UserAccount.of("s", "", "", "", ""), "", "", "new content", "#spring");
+//        Article savedArticle = articleRepository.save(article);
 
         //then
         assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
