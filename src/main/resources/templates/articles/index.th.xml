@@ -1,6 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <thlogic>
-    <!-- select로 header를 찾는다. -->
-    <attr sel="#header" th:replace="header :: header"></attr>
-    <attr sel="#footer" th:replace="footer :: footer"></attr>
+    <attr sel="#header" th:replace="header :: header" />
+    <attr sel="#footer" th:replace="footer :: footer" />
+
+    <attr sel="#article-table">
+        <attr sel="tbody" th:remove="all-but-first">
+            <attr sel="tr[0]" th:each="article : ${articles}">
+                <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles/' + ${article.id}}" />
+                <attr sel="td.hashtag" th:text="${article.hashtag}" />
+                <attr sel="td.user-id" th:text="${article.nickname}" />
+                <attr sel="td.created-at/time" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}" />
+            </attr>
+        </attr>
+    </attr>
 </thlogic>
