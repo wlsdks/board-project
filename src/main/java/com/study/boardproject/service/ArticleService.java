@@ -75,13 +75,14 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public ArticleDto searchArticle(long articleId) {
-        return null;
+    public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
+        if (hashtag == null || hashtag.isBlank()) {
+            return Page.empty(); // 빈 페이지를 보여준다.
+        }
+        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
     }
 
-    @Transactional(readOnly = true)
-    public Page<ArticleDto> searchArticlesPaging(SearchType searchType, String searchKeyword) {
-        return Page.empty();
+    public List<String> getHashtags() {
+        return articleRepository.findAllDistinctHashtags();
     }
-
 }

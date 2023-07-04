@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.study.boardproject.domain.Article;
 import com.study.boardproject.domain.QArticle;
+import com.study.boardproject.repository.querydsl.ArticleRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource // spring-data-rest 사용을 위해 작성
 public interface ArticleRepository extends
         JpaRepository<Article, Long>,
+        ArticleRepositoryCustom, // 커스텀 리포지토리를 상속받는다.
         QuerydslPredicateExecutor<Article>, // 이 entity의 모든 필드에 대한 기본 검색기능을 추가해준다. (like검색 불가능)
         QuerydslBinderCustomizer<QArticle> // 이걸 추가해야 검색의 세부설정이 가능하다. (like 검색 설정가능)
 {
@@ -41,5 +43,4 @@ public interface ArticleRepository extends
         bindings.bind(root.createdAt).first(DateTimeExpression::eq);
         bindings.bind(root.createdBy).first(StringExpression::containsIgnoreCase);
     }
-
 }
