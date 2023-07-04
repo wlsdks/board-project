@@ -5,6 +5,7 @@ import com.study.boardproject.dto.response.ArticleResponse;
 import com.study.boardproject.dto.response.ArticleWithCommentsResponse;
 import com.study.boardproject.service.ArticleService;
 import com.study.boardproject.service.PaginationService;
+import io.micrometer.core.instrument.search.Search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,7 @@ public class ArticleController {
 
         map.addAttribute("articles", articles);
         map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchTypes", SearchType.values());
 
         return "articles/index";
     }

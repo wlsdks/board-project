@@ -1,6 +1,7 @@
 package com.study.boardproject.controller;
 
 import com.study.boardproject.config.SecurityConfig;
+import com.study.boardproject.domain.type.SearchType;
 import com.study.boardproject.dto.ArticleWithCommentsDto;
 import com.study.boardproject.dto.UserAccountDto;
 import com.study.boardproject.service.ArticleService;
@@ -65,6 +66,33 @@ class ArticleControllerTest {
 
         // 어떤 mock이 호출되었는지 검증한다.
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view]-[GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
+    @Test
+    void board_search_test() throws Exception {
+        //given
+        SearchType searchType = SearchType.TITLE;
+        String searchValue = "title";
+
+        given(articleService.searchArticles(eq(searchType), eq(searchValue), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+
+        //when & then
+        mockMvc.perform(
+                        get("/articles")
+                                .queryParam("searchType", searchType.name())
+                                .queryParam("searchValue", searchValue)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html characterset옵션이 붙어도 오류안나게 compatible로 테스트함
+                .andExpect(view().name("articles/index")) // view의 이름검사 실시
+                .andExpect(model().attributeExists("articles")) // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
+                .andExpect(model().attributeExists("searchTypes"));
+
+        // 어떤 mock이 호출되었는지 검증한다.
+        then(articleService).should().searchArticles(eq(searchType), eq(searchValue), any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 
