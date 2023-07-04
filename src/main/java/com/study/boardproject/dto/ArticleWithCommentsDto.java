@@ -23,10 +23,12 @@ public record ArticleWithCommentsDto(
         return new ArticleWithCommentsDto(id, userAccountDto, articleCommentDtos, title, content, hashtag, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
+    // entity를 dto로 변환
     public static ArticleWithCommentsDto from(Article entity) {
         return new ArticleWithCommentsDto(
                 entity.getId(),
                 UserAccountDto.from(entity.getUserAccount()),
+                // 변환할때 article 내부의 comment를 stream으로 dto로 변환해서 가져온다.
                 entity.getArticleComments().stream()
                         .map(ArticleCommentDto::from)
                         .collect(Collectors.toCollection(LinkedHashSet::new)),

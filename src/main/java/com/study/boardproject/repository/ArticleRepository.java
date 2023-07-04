@@ -20,7 +20,12 @@ public interface ArticleRepository extends
         QuerydslBinderCustomizer<QArticle> // 이걸 추가해야 검색의 세부설정이 가능하다. (like 검색 설정가능)
 {
 
-    Page<Article> findByTitle(String title, Pageable pageable);
+    // 부분검색 가능하게 Containing을 붙여준다. -> query에 {% %} 추가됨
+    Page<Article> findByTitleContaining(String title, Pageable pageable);
+    Page<Article> findByContentContaining(String content, Pageable pageable);
+    Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
+    Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
+    Page<Article> findByHashtag(String hashtag, Pageable pageable);
 
     // 앞에 default를 달아줘서 메서드를 구현할수 있다.
     // 검색 기능 - 상세검색 구현
