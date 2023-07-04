@@ -155,22 +155,62 @@ class ArticleControllerTest {
         mockMvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
-                .andExpect(model().attributeExists("articles/search"));
+                .andExpect(view().name("articles/search")); // view의 이름검사 실시
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view]-[GET] 게시글 해시테그 검색 페이지 - 정상호출 ")
     @Test
     void board_list_test4() throws Exception {
         //given
+        List<String> hashtags = List.of("#java", "#spring", "#boot");
+        given(articleService.searchArticlesViaHashtag(eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(articleService.getHashtags()).willReturn(hashtags);
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(1, 2, 3, 4, 5));
 
         //when & then
         mockMvc.perform(get("/articles/search-hashtag"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
-                .andExpect(model().attributeExists("articles/search-hashtag"));
+                .andExpect(view().name("articles/search-hashtag")) // view의 이름검사 실시
+                .andExpect(model().attribute("articles", Page.empty()))
+                .andExpect(model().attribute("hashtags", hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+
+        then(articleService).should().searchArticlesViaHashtag(eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+        then(articleService).should().getHashtags();
+
     }
 
+    @DisplayName("[view]-[GET] 게시글 해시테그 검색 페이지 - 정상호출, hashtag 입력 ")
+    @Test
+    void searchHashTagTest() throws Exception {
+        //given
+        String hashtag = "#java";
+        List<String> hashtags = List.of("#java", "#spring", "#boot");
+        given(articleService.searchArticlesViaHashtag(eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(articleService.getHashtags()).willReturn(hashtags);
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(1, 2, 3, 4, 5));
+
+        //when & then
+        mockMvc.perform(get("/articles/search-hashtag")
+                        .queryParam("searchValue", hashtag)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
+                .andExpect(view().name("articles/search-hashtag")) // view의 이름검사 실시
+                .andExpect(model().attribute("articles", Page.empty()))
+                .andExpect(model().attribute("hashtags", hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+
+        then(articleService).should().searchArticlesViaHashtag(eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+        then(articleService).should().getHashtags();
+
+
+    }
 
 
     private ArticleWithCommentsDto createArticleWithCommentsDto() {
