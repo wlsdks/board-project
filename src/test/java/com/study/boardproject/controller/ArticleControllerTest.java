@@ -4,6 +4,7 @@ import com.study.boardproject.config.SecurityConfig;
 import com.study.boardproject.dto.ArticleWithCommentsDto;
 import com.study.boardproject.dto.UserAccountDto;
 import com.study.boardproject.service.ArticleService;
+import com.study.boardproject.service.PaginationService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,17 +13,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,6 +40,9 @@ class ArticleControllerTest {
     @MockBean
     private ArticleService articleService;
 
+    @MockBean
+    private PaginationService paginationService;
+
     // 테스트 코드에서는 @Autowired 생략불가
     public ArticleControllerTest(@Autowired MockMvc mockMvc) {
         this.mockMvc = mockMvc;
@@ -46,17 +53,49 @@ class ArticleControllerTest {
     void board_list_test() throws Exception {
         //given
         given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
 
         //when & then
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html characterset옵션이 붙어도 오류안나게 compatible로 테스트함
                 .andExpect(view().name("articles/index")) // view의 이름검사 실시
-                .andExpect(model().attributeExists("articles")); // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
-//                .andExpect(model().attributeExists("searchTypes"));
+                .andExpect(model().attributeExists("articles")) // model안에 articles라는 이름의 key값을 가지는 데이터가있는지 체크
+                .andExpect(model().attributeExists("paginationBarNumbers"));
 
         // 어떤 mock이 호출되었는지 검증한다.
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view]-[GET] 게시글 리스트 (게시판) 페이지 - 페이징, 정렬 기능")
+    @Test
+    void pagination_test() throws Exception {
+        //given
+        String sortName = "title";
+        String direction = "desc";
+        int pageNumber = 0;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Order.desc(sortName)));
+        List<Integer> barNumbers = List.of(1, 2, 3, 4, 5);
+        given(articleService.searchArticles(null, null, pageable)).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages())).willReturn(barNumbers);
+
+        //when
+        mockMvc.perform(get("/articles")
+                        .queryParam("page", String.valueOf(pageNumber))
+                        .queryParam("size", String.valueOf(pageSize))
+                        .queryParam("sort", sortName + "," + direction)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/index"))
+                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attribute("paginationBarNumbers", barNumbers));
+
+        //then
+        then(articleService).should().searchArticles(null, null, pageable);
+        then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
     }
 
     @DisplayName("[view]-[GET] 게시글 상세 페이지 - 정상호출 ")
@@ -103,6 +142,8 @@ class ArticleControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // view니까 text_html
                 .andExpect(model().attributeExists("articles/search-hashtag"));
     }
+
+
 
     private ArticleWithCommentsDto createArticleWithCommentsDto() {
         return ArticleWithCommentsDto.of(
