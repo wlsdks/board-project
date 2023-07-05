@@ -2,7 +2,6 @@ package com.study.boardproject.dto;
 
 import com.study.boardproject.domain.Article;
 import com.study.boardproject.domain.ArticleComment;
-import com.study.boardproject.domain.UserAccount;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +18,12 @@ public record ArticleCommentDto(
         LocalDateTime modifiedAt,
         String modifiedBy
 ) {
+
+    // 넣을수없는 정보는 null로 만드는 factory 메소드 생성
+    public static ArticleCommentDto of(Long articleId, UserAccountDto userAccountDto, String content) {
+        return new ArticleCommentDto(null, articleId, userAccountDto, content, null, null, null, null);
+    }
+
     public static ArticleCommentDto of(Long id, Long articleId, UserAccountDto userAccountDto, String content, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
         return new ArticleCommentDto(id, articleId, userAccountDto, content, createdAt, createdBy, modifiedAt, modifiedBy);
     }
