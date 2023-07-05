@@ -25,7 +25,7 @@ public class Article extends AuditingFields{
 
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_account_id")
+    @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보ID
 
     // @Setter를 필드에 걸어서 정말 필요한 필드에만 걸어준다. Id같은건 못건들게 한다. nullable은 default는 true이다.
