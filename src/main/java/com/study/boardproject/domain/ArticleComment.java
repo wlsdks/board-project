@@ -24,12 +24,12 @@ public class ArticleComment extends AuditingFields{
     //optinoal = false는 필수값이라는 뜻이다.
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "articleId")
     private Article article; // 게시글 (ID)
 
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_account_id")
+    @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보 (ID)
 
     @Setter
