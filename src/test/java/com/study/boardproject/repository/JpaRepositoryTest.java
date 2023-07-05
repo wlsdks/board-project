@@ -1,6 +1,5 @@
 package com.study.boardproject.repository;
 
-import com.study.boardproject.config.JpaConfig;
 import com.study.boardproject.domain.Article;
 import com.study.boardproject.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
@@ -98,9 +97,8 @@ class JpaRepositoryTest {
         assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - deletedCommentsSize);
     }
 
-
     @EnableJpaAuditing
-    @TestConfiguration //테스트할때만 등록한다.
+    @TestConfiguration
     public static class TestJpaConfig {
         @Bean
         public AuditorAware<String> auditorAware() {

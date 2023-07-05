@@ -49,27 +49,13 @@ public class SecurityConfig {
                 .build();
     }
 
-    /**
-     * 인증과 권한체크를 하는 부분이다.
-     * 이부분은 spring security 검사에서 제외하는 부분을 작성한다.
-     * 근데 이 방식은 추천하지않는다고 warn이 나온다.
-     */
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        //static resource, css, js
-//        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-//    }
-
-    /**
-     * 실제 인증 데이터를 가져오는 서비스를 구현한다.
-     */
     @Bean
     public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
         return username -> userAccountRepository
-                .findById(username) //entity를 받아온다.
-                .map(UserAccountDto::from) //entity를 dto로 변환한다.
+                .findById(username)
+                .map(UserAccountDto::from)
                 .map(BoardPrincipal::from)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다. - username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - username: " + username));
     }
 
     /**
@@ -80,8 +66,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-
 
 
 }

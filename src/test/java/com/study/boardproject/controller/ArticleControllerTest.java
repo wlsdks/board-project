@@ -1,6 +1,5 @@
 package com.study.boardproject.controller;
 
-import com.study.boardproject.config.SecurityConfig;
 import com.study.boardproject.config.TestSecurityConfig;
 import com.study.boardproject.domain.constant.FormStatus;
 import com.study.boardproject.domain.type.SearchType;
@@ -9,7 +8,6 @@ import com.study.boardproject.dto.ArticleWithCommentsDto;
 import com.study.boardproject.dto.UserAccountDto;
 import com.study.boardproject.dto.request.ArticleRequest;
 import com.study.boardproject.dto.response.ArticleResponse;
-import com.study.boardproject.dto.security.BoardPrincipal;
 import com.study.boardproject.service.ArticleService;
 import com.study.boardproject.service.PaginationService;
 import com.study.boardproject.util.FormDataEncoder;
@@ -37,7 +35,6 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -62,19 +59,6 @@ class ArticleControllerTest {
         this.formDataEncoder = formDataEncoder;
     }
 
-    @DisplayName("[view][GET] 게시글 페이지 - 인증 없을 땐 로그인 페이지로 이동")
-    @Test
-    void securityLoginTest() throws Exception {
-        //given
-        long articleId = 1L;
-
-        //when & then
-        mvc.perform(get("/articles/" + articleId))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login")); // pattern을 쓰면 앞부분은 생략이 가능하다.
-
-        then(articleService).shouldHaveNoInteractions();
-    }
 
     @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 정상 호출")
     @Test
@@ -148,7 +132,21 @@ class ArticleControllerTest {
         then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
     }
 
-    @WithMockUser // user정보를 mocking해서 넣어준다.
+    @DisplayName("[view][GET] 게시글 페이지 - 인증 없을 땐 로그인 페이지로 이동")
+    @Test
+    void givenNothing_whenRequestingArticlePage_thenRedirectsToLoginPage() throws Exception {
+        // Given
+        long articleId = 1L;
+
+        // When & Then
+        mvc.perform(get("/articles/" + articleId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        then(articleService).shouldHaveNoInteractions();
+        then(articleService).shouldHaveNoInteractions();
+    }
+
+    @WithMockUser
     @DisplayName("[view][GET] 게시글 페이지 - 정상 호출, 인증된 사용자")
     @Test
     public void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
@@ -171,17 +169,17 @@ class ArticleControllerTest {
         then(articleService).should().getArticleCount();
     }
 
-    @WithMockUser // user정보를 mocking해서 넣어준다.
+    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 검색 전용 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingArticleSearchView_thenReturnsArticleSearchView() throws Exception {
         // Given
 
         // When & Then
-        mvc.perform(get("/articles/search/1"))
+        mvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("articles/detail"));
+                .andExpect(view().name("articles/search"));
     }
 
     @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 정상 호출")
@@ -248,8 +246,7 @@ class ArticleControllerTest {
                 .andExpect(model().attribute("formStatus", FormStatus.CREATE));
     }
 
-    // 내가 구현한 UserDetails를 사용할 수 있게 해준다. mock으로 만든 데이터를 value에 넣어준다.
-    @WithUserDetails(value = "wlsdks12", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "unoTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 새 게시글 등록 - 정상 호출")
     @Test
     void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
@@ -270,7 +267,21 @@ class ArticleControllerTest {
         then(articleService).should().saveArticle(any(ArticleDto.class));
     }
 
-    @DisplayName("[view][GET] 게시글 수정 페이지")
+    @DisplayName("[view][GET] 게시글 수정 페이지 - 인증 없을 땐 로그인 페이지로 이동")
+    @Test
+    void givenNothing_whenRequesting_thenRedirectsToLoginPage() throws Exception {
+        // Given
+        long articleId = 1L;
+
+        // When & Then
+        mvc.perform(get("/articles/" + articleId + "/form"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        then(articleService).shouldHaveNoInteractions();
+    }
+
+    @WithMockUser
+    @DisplayName("[view][GET] 게시글 수정 페이지 - 정상 호출, 인증된 사용자")
     @Test
     void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
         // Given
@@ -288,6 +299,7 @@ class ArticleControllerTest {
         then(articleService).should().getArticle(articleId);
     }
 
+    @WithUserDetails(value = "unoTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 게시글 수정 - 정상 호출")
     @Test
     void givenUpdatedArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
@@ -309,12 +321,13 @@ class ArticleControllerTest {
         then(articleService).should().updateArticle(eq(articleId), any(ArticleDto.class));
     }
 
+    @WithUserDetails(value = "unoTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 게시글 삭제 - 정상 호출")
     @Test
     void givenArticleIdToDelete_whenRequesting_thenDeletesArticle() throws Exception {
         // Given
         long articleId = 1L;
-        String userId = "wlsdks";
+        String userId = "unoTest";
         willDoNothing().given(articleService).deleteArticle(articleId, userId);
 
         // When & Then

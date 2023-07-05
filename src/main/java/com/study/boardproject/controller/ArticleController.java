@@ -2,7 +2,6 @@ package com.study.boardproject.controller;
 
 import com.study.boardproject.domain.constant.FormStatus;
 import com.study.boardproject.domain.type.SearchType;
-import com.study.boardproject.dto.UserAccountDto;
 import com.study.boardproject.dto.request.ArticleRequest;
 import com.study.boardproject.dto.response.ArticleResponse;
 import com.study.boardproject.dto.response.ArticleWithCommentsResponse;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +81,7 @@ public class ArticleController {
         return "articles/form";
     }
 
-    @PostMapping("/form")
+    @PostMapping ("/form")
     public String postNewArticle(
             @AuthenticationPrincipal BoardPrincipal boardPrincipal,
             ArticleRequest articleRequest
@@ -103,7 +101,7 @@ public class ArticleController {
         return "articles/form";
     }
 
-    @PostMapping("/{articleId}/form")
+    @PostMapping ("/{articleId}/form")
     public String updateArticle(
             @PathVariable Long articleId,
             @AuthenticationPrincipal BoardPrincipal boardPrincipal,
@@ -114,14 +112,11 @@ public class ArticleController {
         return "redirect:/articles/" + articleId;
     }
 
-    @PostMapping("/{articleId}/delete")
+    @PostMapping ("/{articleId}/delete")
     public String deleteArticle(
             @PathVariable Long articleId,
-            @AuthenticationPrincipal BoardPrincipal boardPrincipal //2.개선된 좋은 방법
+            @AuthenticationPrincipal BoardPrincipal boardPrincipal
     ) {
-        // 1.이런방법이 있다.(전통적인 방법)
-//        SecurityContextHolder.getContext().getAuthentication();
-
         articleService.deleteArticle(articleId, boardPrincipal.getUsername());
 
         return "redirect:/articles";

@@ -30,7 +30,7 @@ public interface ArticleRepository extends
     Page<Article> findByHashtag(String hashtag, Pageable pageable);
 
     // 삭제 로직
-    void deleteByIdAndUserAccount_UserId(Long articleId, String userId);
+    void deleteByIdAndUserAccount_UserId(Long articleId, String userid);
 
     // 앞에 default를 달아줘서 메서드를 구현할수 있다.
     // 검색 기능 - 상세검색 구현

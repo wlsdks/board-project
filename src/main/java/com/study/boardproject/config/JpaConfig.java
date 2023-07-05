@@ -21,7 +21,6 @@ public class JpaConfig {
      */
     @Bean
     public AuditorAware<String> auditorAware() {
-
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)

@@ -17,18 +17,17 @@ import static org.mockito.BDDMockito.given;
 @Import(SecurityConfig.class)
 public class TestSecurityConfig {
 
-    @MockBean
-    private UserAccountRepository userAccountRepository;
+    @MockBean private UserAccountRepository userAccountRepository;
 
-    // 스프링 테스트를 할때만 이게 동작한다. 각 테스트 메소드가 동작하기 전에 이 인증정보를 넣어준다.
     @BeforeTestMethod
     public void securitySetUp() {
         given(userAccountRepository.findById(anyString())).willReturn(Optional.of(UserAccount.of(
-                "uno",
-                "asdf1234",
-                "uno@mail.com",
-                "Uno",
-                "wlsdks memo"
+                "unoTest",
+                "pw",
+                "uno-test@email.com",
+                "uno-test",
+                "test memo"
         )));
     }
+
 }
