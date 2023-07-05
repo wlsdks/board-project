@@ -14,83 +14,83 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JPA 연결 테스트")
-// JpaConfig를 읽지 못해서 직접 import해준다.
 @Import(JpaConfig.class)
 @DataJpaTest
 class JpaRepositoryTest {
 
-    // Junit5부터는 생성자주입이 가능하다.
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
-    public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,
-                             @Autowired ArticleCommentRepository articleCommentRepository) {
+    public JpaRepositoryTest(
+            @Autowired ArticleRepository articleRepository,
+            @Autowired ArticleCommentRepository articleCommentRepository,
+            @Autowired UserAccountRepository userAccountRepository
+    ) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @DisplayName("select 테스트")
     @Test
     void givenTestData_whenSelecting_thenWorksFine() {
-        //given
+        // Given
 
-        //when
+        // When
         List<Article> articles = articleRepository.findAll();
 
-        //then
+        // Then
         assertThat(articles)
-                .isNotNull() // notNull이었으면 하고
-                .hasSize(123); // size는 0이어야 한다.
+                .isNotNull()
+                .hasSize(123);
     }
 
     @DisplayName("insert 테스트")
     @Test
     void givenTestData_whenInserting_thenWorksFine() {
-        //given
+        // Given
         long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("newUno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
 
-        //when
-//        Article article = Article.of(UserAccount.of("s", "", "", "", ""), "", "", "new content", "#spring");
-//        Article savedArticle = articleRepository.save(article);
+        // When
+        articleRepository.save(article);
 
-        //then
+        // Then
         assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
     }
 
     @DisplayName("update 테스트")
     @Test
     void givenTestData_whenUpdating_thenWorksFine() {
-        //given
+        // Given
         Article article = articleRepository.findById(1L).orElseThrow();
-        String updatedHashtag = "#springBoot";
+        String updatedHashtag = "#springboot";
         article.setHashtag(updatedHashtag);
 
-        //when
-        // 테스트에서는 flush를 한번 해줘야함
+        // When
         Article savedArticle = articleRepository.saveAndFlush(article);
 
-        //then
-        // 필드명 = hashtag, #springBoot인가를 확인하는 메서드
+        // Then
         assertThat(savedArticle).hasFieldOrPropertyWithValue("hashtag", updatedHashtag);
     }
 
     @DisplayName("delete 테스트")
     @Test
     void givenTestData_whenDeleting_thenWorksFine() {
-        //given
+        // Given
         Article article = articleRepository.findById(1L).orElseThrow();
-        long previousArticleCount = articleRepository.count(); // 글을 지우면 댓글도 같이 지워진다.
-        long previousArticleComment = articleCommentRepository.count();
+        long previousArticleCount = articleRepository.count();
+        long previousArticleCommentCount = articleCommentRepository.count();
         int deletedCommentsSize = article.getArticleComments().size();
 
-        //when
-        // 테스트에서는 flush를 한번 해줘야함
+        // When
         articleRepository.delete(article);
 
-        //then
-        // 필드명 = hashtag, #springBoot인가를 확인하는 메서드
+        // Then
         assertThat(articleRepository.count()).isEqualTo(previousArticleCount - 1);
-        assertThat(articleCommentRepository.count()).isEqualTo(previousArticleComment - deletedCommentsSize);
+        assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - deletedCommentsSize);
     }
 
 }
