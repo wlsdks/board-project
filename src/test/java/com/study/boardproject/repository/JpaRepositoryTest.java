@@ -119,7 +119,7 @@ class JpaRepositoryTest {
 
         // Then
         assertThat(parentComment).get()
-                .hasFieldOrPropertyWithValue("parentCommentId", null)
+                .hasFieldOrPropertyWithValue("parentComment", null)
                 .extracting("childComments", InstanceOfAssertFactories.COLLECTION)
                 .hasSize(4);
     }
@@ -141,7 +141,7 @@ class JpaRepositoryTest {
 
         // Then
         assertThat(articleCommentRepository.findById(1L)).get()
-                .hasFieldOrPropertyWithValue("parentCommentId", null)
+                .hasFieldOrPropertyWithValue("parentComment", null)
                 .extracting("childComments", InstanceOfAssertFactories.COLLECTION)
                 .hasSize(5);
     }
@@ -207,7 +207,6 @@ class JpaRepositoryTest {
         assertThat(articlePage.getTotalElements()).isEqualTo(17);
         assertThat(articlePage.getTotalPages()).isEqualTo(4);
     }
-
 
     @EnableJpaAuditing
     @TestConfiguration
