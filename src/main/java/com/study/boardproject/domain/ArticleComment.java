@@ -34,12 +34,13 @@ public class ArticleComment extends AuditingFields{
     private UserAccount userAccount; // 유저 정보 (ID)
 
     @Setter
-    @Column(updatable = false) // 부모가 없는 댓글이 있을수도있으니 nullable 해야한다. -> 부모댓글을 세팅하면 바뀔수없도록 해준다.
-    private Long parentCommentId; // 부모 댓글 ID
+    @ManyToOne // 부모가 없는 댓글이 있을수도있으니 nullable 해야한다. -> 부모댓글을 세팅하면 바뀔수없도록 해준다.
+    @JoinColumn(name = "parent_comment_id", insertable = false, updatable = false)
+    private ArticleComment parentComment;
 
     @ToString.Exclude // 연관관계 ToString 순환참조 방지
     @OrderBy("createdAt ASC") // 정렬규칙을 정해준다.
-    @OneToMany(mappedBy = "parentCommentId", cascade = CascadeType.ALL) // 부모 댓글을 지운다면 자식 댓글도 다 지운다. (cascade 조건을 넣어줌)
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL) // 부모 댓글을 지운다면 자식 댓글도 다 지운다. (cascade 조건을 넣어줌)
     private Set<ArticleComment> childComments = new LinkedHashSet<>(); //순서가 있는 set선언
 
     @Setter
@@ -47,19 +48,20 @@ public class ArticleComment extends AuditingFields{
     private String content; // 본문
 
     // 일반적인 생성자인데 private이니 아래의 factory메소드를 사용하게 될것임
-    private ArticleComment(Article article, UserAccount userAccount, Long parentCommentId, String content) {
+    private ArticleComment(Article article, UserAccount userAccount, ArticleComment parentComment, String content) {
         this.article = article;
         this.userAccount = userAccount;
-        this.parentCommentId = parentCommentId;
+        this.parentComment = parentComment;
         this.content = content;
     }
 
     // comment 부모관계를 주입하는 메소드
     public void addChildComment(ArticleComment child) {
         // 안전하게 childComments에 getter로 접근한다.
-        child.setParentCommentId(this.getId());
+        child.setParentComment(this);
         this.getChildComments().add(child);
     }
+
 
     // ArticleComment entity를 만드는 factory 메소드 선언 -> 이게 생성자가 된다. (코드 변경에 대한 영향을 최소화할수있음)
     public static ArticleComment of(Article article,UserAccount userAccount, String content) {
