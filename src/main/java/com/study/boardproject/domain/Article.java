@@ -66,10 +66,12 @@ public class Article extends AuditingFields{
         this.getHashtags().add(hashtag);
     }
 
+    // 해시태그의 필드에 직접 접근해서 추가하는 메소드
     public void addHashtags(Collection<Hashtag> hashtags) {
         this.getHashtags().addAll(hashtags);
     }
 
+    // 해시태그 삭제
     public void clearHashtags() {
         this.getHashtags().clear();
     }

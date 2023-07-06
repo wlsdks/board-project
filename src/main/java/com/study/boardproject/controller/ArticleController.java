@@ -28,6 +28,9 @@ public class ArticleController {
     private final ArticleService articleService;
     private final PaginationService paginationService;
 
+    /**
+     * 게시글 리스트 조회
+     */
     @GetMapping
     public String articles(
             @RequestParam(required = false) SearchType searchType,
@@ -41,10 +44,14 @@ public class ArticleController {
         map.addAttribute("articles", articles);
         map.addAttribute("paginationBarNumbers", barNumbers);
         map.addAttribute("searchTypes", SearchType.values());
+        map.addAttribute("searchTypeHashtag", SearchType.HASHTAG);
 
         return "articles/index";
     }
 
+    /**
+     * 게시글 상세페이지
+     */
     @GetMapping("/{articleId}")
     public String article(@PathVariable Long articleId, ModelMap map) {
         ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticleWithComments(articleId));
@@ -52,6 +59,7 @@ public class ArticleController {
         map.addAttribute("article", article);
         map.addAttribute("articleComments", article.articleCommentsResponse());
         map.addAttribute("totalCount", articleService.getArticleCount());
+        map.addAttribute("searchTypeHashtag", SearchType.HASHTAG);
 
         return "articles/detail";
     }
