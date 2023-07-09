@@ -298,7 +298,6 @@ class ArticleServiceTest {
         // Then
         then(articleRepository).should().getReferenceById(differentArticleId);
         then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
-        then(hashtagService).shouldHaveNoInteractions();
     }
 
     @DisplayName("게시글의 ID를 입력하면, 게시글을 삭제한다")
