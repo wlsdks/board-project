@@ -7,9 +7,11 @@ import com.study.boardproject.dto.HashtagDto;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * 게시글 댓글 Response 객체
+ */
 public record ArticleWithCommentsResponse(
         Long id,
         String title,
@@ -22,16 +24,38 @@ public record ArticleWithCommentsResponse(
         Set<ArticleCommentResponse> articleCommentsResponse
 ) {
 
-    public static ArticleWithCommentsResponse of(Long id, String title, String content, Set<String> hashtags, LocalDateTime createdAt, String email, String nickname, String userId, Set<ArticleCommentResponse> articleCommentResponses) {
-        return new ArticleWithCommentsResponse(id, title, content, hashtags, createdAt, email, nickname, userId, articleCommentResponses);
+    // factory 메소드로 만든 ArticleWithCommentsResponse의 생성자 메소드다.
+    public static ArticleWithCommentsResponse of(Long id,
+                                                 String title,
+                                                 String content,
+                                                 Set<String> hashtags,
+                                                 LocalDateTime createdAt,
+                                                 String email,
+                                                 String nickname,
+                                                 String userId,
+                                                 Set<ArticleCommentResponse> articleCommentResponses) {
+
+        return new ArticleWithCommentsResponse(id,
+                title,
+                content,
+                hashtags,
+                createdAt,
+                email,
+                nickname,
+                userId,
+                articleCommentResponses);
     }
 
+    /**
+     * ArticleWithCommentsDto를 받아서 ArticleWithCommentsResponse로 만들어주는 메소드
+     */
     public static ArticleWithCommentsResponse from(ArticleWithCommentsDto dto) {
         String nickname = dto.userAccountDto().nickname();
         if (nickname == null || nickname.isBlank()) {
             nickname = dto.userAccountDto().userId();
         }
 
+        // dto에서 값을 꺼내서 생성자에 넣어줌으로써 ArticleWithCommentsResponse를 만들어준다.
         return new ArticleWithCommentsResponse(
                 dto.id(),
                 dto.title(),
@@ -44,9 +68,7 @@ public record ArticleWithCommentsResponse(
                 dto.userAccountDto().email(),
                 nickname,
                 dto.userAccountDto().userId(),
-                dto.articleCommentDtos().stream()
-                        .map(ArticleCommentResponse::from)
-                        .collect(Collectors.toCollection(LinkedHashSet::new))
+                organizeChildComments(dto.articleCommentDtos()) // dto안의 articleCommentDtos()를 인자로 넣어준다.
         );
     }
 
