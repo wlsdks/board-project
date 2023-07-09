@@ -20,8 +20,9 @@ public interface ArticleCommentRepository extends
         QuerydslBinderCustomizer<QArticleComment> // 이걸 추가해야 검색의 세부설정이 가능하다. (like 검색 설정가능)
 {
 
-
+    // articleId로 댓글을 List로 받아오는 메소드
     List<ArticleComment> findByArticle_Id(Long articleId);
+
     void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
 
     // 앞에 default를 달아줘서 메서드를 구현할수 있다.

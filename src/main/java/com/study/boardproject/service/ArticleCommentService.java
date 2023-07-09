@@ -33,11 +33,23 @@ public class ArticleCommentService {
                 .toList();
     }
 
+    /**
+     * 게시글 댓글 저장 메소드
+     */
     public void saveArticleComment(ArticleCommentDto dto) {
         try {
             Article article = articleRepository.getReferenceById(dto.articleId());
             UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
-            articleCommentRepository.save(dto.toEntity(article, userAccount));
+            ArticleComment articleComment = dto.toEntity(article, userAccount);
+
+            // 부모냐 자식이냐 판단한다. 여기선 자식이면 if문이 동작한다.
+            if (dto.parentCommentId() != null) {
+                ArticleComment parentComment = articleCommentRepository.getReferenceById(dto.parentCommentId());
+                parentComment.addChildComment(articleComment); // 부모댓글에 자식 댓글을 넣어준다.
+            } else { // 자식이 아닐때는 else를 탄다.
+                articleCommentRepository.save(articleComment);
+            }
+
         } catch (EntityNotFoundException e) {
             log.warn("댓글 저장 실패. 댓글 작성에 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
