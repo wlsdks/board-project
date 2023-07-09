@@ -5,7 +5,10 @@ import com.study.boardproject.dto.ArticleWithCommentsDto;
 import com.study.boardproject.dto.HashtagDto;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -76,7 +79,11 @@ public record ArticleWithCommentsResponse(
      * 댓글, 대댓글 세팅하는 메소드
      */
     private static Set<ArticleCommentResponse> organizeChildComments(Set<ArticleCommentDto> dtos) {
-        // Set<ArticleCommentDto>를 Map<Long, ArticleCommentResponse>으로 변환하는 작업 실시
+        /**
+         * 1. Set<ArticleCommentDto>를 Map<Long, ArticleCommentResponse>으로 변환하는 작업 실시
+         * 2. ArticleCommentResponse::id를 통해 각 객체의 id를 키로, 그리고 Function.identity()를 통해 각 객체 그대로를 값으로 가지는 Map이 생성된다.
+         *    그래서 결과적으로 id를 키로, 해당 id를 가진 ArticleCommentResponse 객체를 값으로 하는 Map을 반환하는 것이다..
+         */
         Map<Long, ArticleCommentResponse> map = dtos.stream()
                 .map(ArticleCommentResponse::from)
                 .collect(Collectors.toMap(ArticleCommentResponse::id, Function.identity()));
