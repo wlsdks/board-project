@@ -34,11 +34,15 @@ public record ArticleCommentDto(
     }
 
     public static ArticleCommentDto from(ArticleComment entity) {
+
+        // null check
+        Long parentCommentId = (entity.getParentComment() != null) ? entity.getParentComment().getId() : null;
+
         return new ArticleCommentDto(
                 entity.getId(),
                 entity.getArticle().getId(),
                 UserAccountDto.from(entity.getUserAccount()),
-                entity.getParentComment().getId(),
+                parentCommentId, // null일 경우 null, 아니면 id값
                 entity.getContent(),
                 entity.getCreatedAt(),
                 entity.getCreatedBy(),
@@ -48,6 +52,7 @@ public record ArticleCommentDto(
     }
 
     public ArticleComment toEntity(Article article, UserAccount userAccount) {
+        // ArticleComment 엔티티를 만들어서 반환받는다.
         return ArticleComment.of(
                 article,
                 userAccount,
