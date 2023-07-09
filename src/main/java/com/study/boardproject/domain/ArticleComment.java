@@ -33,6 +33,12 @@ public class ArticleComment extends AuditingFields{
     @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보 (ID)
 
+    /**
+     * 대댓글이면 부모 id가 있고 아니면 null일 것이다.
+     * 1번 댓글 [대댓글 존재] 2번 댓글 [대댓글 없음] 일때 아래와 같이 동작한다.
+     * 구성은 모든 댓글을 순회해서 대댓글이 존재하면 childCommnets의 Set인 Set<ArticleComment> 안에 대댓글을 저장하고 그 대댓글을 지워버린다.
+     * 그러면 깨끗하게 댓글 안에 대댓글이 들어간 최상위가 댓글인 녀석의 형태가 완성된다.
+     */
     @Setter
     @ManyToOne // 부모가 없는 댓글이 있을수도있으니 nullable 해야한다. -> 부모댓글을 세팅하면 바뀔수없도록 해준다.
     @JoinColumn(name = "parent_comment_id", insertable = false, updatable = false)
