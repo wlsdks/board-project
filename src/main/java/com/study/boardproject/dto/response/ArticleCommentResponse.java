@@ -48,9 +48,12 @@ public record ArticleCommentResponse(
         );
     }
 
-    // 부모인지 자식인지 판단하는 메서드
+    /**
+     * 부모댓글을 가졌는지 확인하는 메서드
+     * parentCommentId가 null이 아니면 true
+     * -> 즉 부모댓글이 있으면 true를 반환
+     */
     public boolean hasParentComment() {
-        // 내가 parentCommentId를 가졌는지 아닌지를 검사하면 된다.
         return parentCommentId != null;
     }
 
