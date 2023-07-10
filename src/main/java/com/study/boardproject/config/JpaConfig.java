@@ -21,6 +21,9 @@ public class JpaConfig {
      */
     @Bean
     public AuditorAware<String> auditorAware() {
+        /**
+         * SecurityContextHolder에 접근해서 인증정보로부터 작성자의 정보(getUsername)를 가지고 온다.
+         */
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
