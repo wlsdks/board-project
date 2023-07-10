@@ -24,6 +24,7 @@ public record ArticleWithCommentsDto(
         return new ArticleWithCommentsDto(id, userAccountDto, articleCommentDtos, title, content, hashtagDtos, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
+    // entity를 dto로
     public static ArticleWithCommentsDto from(Article entity) {
         return new ArticleWithCommentsDto(
                 entity.getId(),
