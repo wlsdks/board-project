@@ -46,18 +46,18 @@ spring:
       client:
         registration:
           kakao:
-            client-id: id
-            client-secret: key
+            client-id: "a30ff9b6f4dedf47526efdfc3cfe2e84"
+            client-secret:
             authorization-grant-type: authorization_code
-#            redirect-uri: http://localhost:8080/login/oauth2/code/kakao #springBoot의 기본 방식을 적용
+            #            redirect-uri: http://localhost:8080/login/oauth2/code/kakao #springBoot의 기본 방식을 적용
             redirect-uri: "{baseUrl}/login/oauth2/code/kakao" #이렇게하면 알아서 {}안에 domain을 넣어준다. 근데 yml에서는 {}은 제대로 못읽는다.그래서 ""로 감싸주어야 한다.
-            client-authentication-method: POST #http method도 설정해준다.
+            client-authentication-method: none #http method도 설정해준다.
         provider:
           kakao: # 공식 페이지에서 정보를 확인해서 넣어주자
-            authorizationUri: https://kauth.kakao.com/oauth/authorize
-            tokenUri: https://kauth.kakao.com/oauth/token
-            userInfoUri: https://kapi.kakao.com/v2/user/me
-            userNameAttribute: id
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 
 ---  # yaml 파일은 "-" 모양 줄 3개를 기준으로 여러개의 document를 만들수가 있다.
 #
