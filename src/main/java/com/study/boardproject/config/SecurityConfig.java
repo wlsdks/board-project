@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.UUID;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
@@ -114,7 +116,8 @@ public class SecurityConfig {
             String username = registrationId + "_" + providerId;
 
             // 6. 비밀번호도 만들어준다. -> 카카오 로그인에는 필요없지만 필드자체를 not null로 설계해버려서 가짜를 만들어준다. bcrypt로 인코딩해서 넣는다.
-            String dummyPassword = passwordEncoder.encode("{bcrypt}dummy");
+//            String dummyPassword = passwordEncoder.encode("{bcrypt}dummy");
+            String dummyPassword = passwordEncoder.encode("{bcrypt}" + UUID.randomUUID());
 
             // 7. return으로 db에 유저가 있다면 ok , db에 유저가 없다면 가입을 시킨다.
             return userAccountService.searchUser(username)
