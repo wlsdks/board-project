@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JPA 연결 테스트")
 @Import(JpaRepositoryTest.TestJpaConfig.class)
-@DataJpaTest
+@DataJpaTest // 단위테스트
 class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;

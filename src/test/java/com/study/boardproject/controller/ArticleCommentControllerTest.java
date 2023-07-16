@@ -35,7 +35,6 @@ class ArticleCommentControllerTest {
 
     @MockBean private ArticleCommentService articleCommentService;
 
-
     public ArticleCommentControllerTest(
             @Autowired MockMvc mvc,
             @Autowired FormDataEncoder formDataEncoder
@@ -43,7 +42,6 @@ class ArticleCommentControllerTest {
         this.mvc = mvc;
         this.formDataEncoder = formDataEncoder;
     }
-
 
     @WithUserDetails(value = "unoTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 댓글 등록 - 정상 호출")
