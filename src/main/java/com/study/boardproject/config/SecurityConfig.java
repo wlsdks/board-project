@@ -84,10 +84,16 @@ public class SecurityConfig {
     }
 
     /**
-     * OAuth2의 사용자 인증을 위한 메소드다.
-     * OAuth2UserService 는 @FunctionalInterface 이다. 즉, 람다식이 가능하다.
-     * 위의 userDetailsService와 같은 역할을 하는 녀석이다.
-     * 여기가 매우 중요하다! 핵심 기능이다.
+     * <p>
+     * OAuth 2.0 기술을 사용한 사용자 인증을 위한 메소드다. OAuth2UserService -> @FunctionalInterface 라서 람다식으로 작성이 가능하다.
+     * 여기가 매우 중요하다! 핵심 기능이다. 이 코드는 위의 userDetailsService와 같은 역할을 하는 녀석이다.
+     *
+     * <p>
+     * TODO: 카카오 도메인에 결합되어 있는 코드. 확장을 고려하면 별도의 인증 처리 서비스 클래스로 분리하는것이 좋겠지만 현재 다른 OAuth 인증이 없으니 우선은 이대로 사용한다.
+     *
+     * @param userAccountService  게시판 서비스의 사용자 계정을 다루는 서비스 로직
+     * @param passwordEncoder  패스워드 암호화 도구
+     * @return {@link OAuth2UserService} OAuth2 인증 사용자 정보를 읽어들이고 처리하는 서비스 인스턴스를 반환한다.
      */
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
