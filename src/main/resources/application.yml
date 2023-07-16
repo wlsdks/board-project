@@ -8,6 +8,15 @@ logging:
     org.hibernate.orm.jdbc.bind: trace  # jpa를 사용할때 쿼리를 debug로 관찰할때 바인딩 파라미터를 보이게 한다. springBoot3.x부터는 이렇게 써야한다.
 
 spring:
+  # 보안을 위한 vault 설정 추가
+  application.name: fastcampus-board # vault에서 만든 secret이름을 넣는다.
+  cloud.vault:
+    scheme: http
+    authentication: TOKEN # APPID, APPROLE, TOKEN 방식을 주로 사용한다.
+    token: ${VAULT_TOKEN}
+  config.import: vault:// # 외부설정에 vault를 읽어들이겠다고 추가해준다.
+
+  # 데이터베이스 설정 추가
   datasource:
     url: ${LOCAL_DB_URL}
     username: ${LOCAL_DB_USERNAME}
