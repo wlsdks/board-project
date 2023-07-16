@@ -59,12 +59,15 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
----  # yaml 파일은 "-" 모양 줄 3개를 기준으로 여러개의 document를 만들수가 있다.
-#
-#spring:
-#  config.activate.on-profile: testdb # test전용 db를 설정한다.
-#  datasource:
-#    url: jdbc:h2:mem:board;mode=mysql # mysql모드를 활성화시킨다.
-#    driverClassName: org.h2.Driver
-#  sql.init.mode: always
-#  test.database.replace: none
+---
+
+spring:
+  config.activate.on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
