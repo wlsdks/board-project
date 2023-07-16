@@ -7,6 +7,11 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * <p>
+ * 댓글 응답 표준 포맷
+ * <p>
+ */
 public record ArticleCommentResponse(
         Long id,
         String content,
