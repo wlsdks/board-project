@@ -29,7 +29,7 @@ public record BoardPrincipal(
 
     // OAuth2와 관련없는 생성자 factory 메소드 oAuth2Attributes 필드를 사용하지 않는 코드를 위함
     public static BoardPrincipal of(String username, String password, String email, String nickname, String memo) {
-        return of(username, password, email, nickname, memo, Map.of()); //비어있는 Map을 하나 넘겨준다.(null값은 null safe에 좋지않음)
+        return BoardPrincipal.of(username, password, email, nickname, memo, Map.of()); //비어있는 Map을 하나 넘겨준다.(null값은 null safe에 좋지않음)
     }
 
     // OAuth2에 대응되는 생성자 factory 메소드

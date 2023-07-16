@@ -59,7 +59,7 @@ public class UserAccount extends AuditingFields {
     // UserAccount를 만드는 factory 메소드2 - 인증정보가 이미 있을때
     public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
         // 이미 createdBy가 있는 상태일것이라 createdBy 자리에 null을 넣는다.
-        return new UserAccount(userId, userPassword, email, nickname, memo, null);
+        return UserAccount.of(userId, userPassword, email, nickname, memo, null);
     }
 
     @Override
